@@ -2,7 +2,7 @@ package com.example.popitka.controller;
 
 
 
-import com.example.zachet_adminka.model.User;
+import com.example.popitka.model.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;

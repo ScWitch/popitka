@@ -1,5 +1,5 @@
 package com.example.popitka.controller;
-import com.example.zachet_adminka.model.Book;
+import com.example.popitka.model.Book;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
