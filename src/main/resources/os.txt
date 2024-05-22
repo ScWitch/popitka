@@ -1,0 +1,118 @@
+
+sudo apt-get install openssh-server
+
+ip addr  Проверка айпи адреса для подключения к вм
+ssh логин@айпишник   192.168.50.163
+sudo apt update типо обновление всяких пакетов
+sudo apt install -y openjdk-17-jdk maven nginx  установка джебы, мейвен, нджинк
+sudo mkdir -p /home/rutuser/app
+cd /home/rutuser/app
+ls -ld /home/rutuser/app изменение прав доступа к директории app
+sudo git clone https://github.com/ScWitch/popitka.git
+cd /home/rutuser/app/popitka
+sudo mvn clean package
+sudo mkdir -p /var/www/app
+sudo cp target//popitka-0.0.1-SNAPSHOT.jar /var/www/app перенос собранного проекта 
+sudo chmod 755 /var/www/app//popitka-0.0.1-SNAPSHOT.jar  него есть права
+sudo nano /etc/systemd/system/java-api-service.service  мой ДЭМОН
+
+_________________________________________________________________
+[Unit]
+Description=Java API Service
+After=network.target
+
+[Service]
+User=rutuser
+ExecStart=/usr/bin/java -jar /var/www/app/popitka-0.0.1-SNAPSHOT.jar
+SuccessExitStatus=143
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+
+Выйти и сохранить 
+cntrl+O
+Enter
+cntrl+X
+y
+Enter
+__________________________________________________________________
+sudo systemctl daemon-reload
+sudo systemctl start java-api-service
+sudo systemctl enable java-api-service
+sudo systemctl status java-api-service   
+
+Нажать q
+
+sudo nano /etc/nginx/sites-available/default 
+комментируем все
+
+
+__________________________________________________________________
+sudo nano /etc/nginx/sites-available/java-api-service реально в свои настройки Винкс
+
+server {
+    listen 80;
+
+    server_name java-api-service;
+
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+__________________________________________________________________
+
+sudo ln -s /etc/nginx/sites-available/java-api-service /etc/nginx/sites-enabled/java-api-service
+пернос кудато что-то
+sudo systemctl restart nginx
+
+ip addr - для определения ip машины
+
+Пример просмотра запроса в http
+http://192.168.50.238/health
+
+Пример запросов:
+
+GET http://192.168.50.163/health
+
+GET http://192.168.50.163/users/get_all_users
+
+GET http://192.168.50.163/books/get_all_books
+
+
+Если будут проблемы с портом и он чем то занят 
+sudo ss -tuln | grep :80
+sudo lsof -i :80
+sudo systemctl stop apache2
+
+1)ls -al
+. текущая
+.. родительская текущей
+4) mkdir -p /home/rutuser/userdir/newdir/
+sudo cp ~/test.txt /home/rutuser/userdir/newdir/
+cd /home/rutuser/userdir/newdir/
+ls -al
+cd rutuser
+5)sudo ln -s /etc/hosts /home/rutuser/userdir/newdir/hosts_link
+ls -l /home/rutuser/userdir/newdir проверка
+6)chmod 000 ~/test.txt
+ls -l ~/test.txt
+7)date > ~/current_date.txt
+cat ~/current_date.txt
+8)echo -e '#!/bin/bash\n echo "fjh"' > ~/greeting.sh
+~/greeting.sh
+9)ps -e | awk '{print $1, $4}'
+10)sudo systemctl status java-api-service для поиска PID и проверки активности демонов
+htop емоны все нужен PID
+sudo renice -20 723 <-- мой Pid
+htop - это хорошо
+11)sudo kill -SIGTERM 723 
+12)
+sudo systemctl start java-api-service
+sudo systemctl status java-api-service
